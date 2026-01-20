@@ -15,8 +15,8 @@
   "type": "module",
   "main": "dist/main.mjs",
   "scripts": {
-    "build": "npx tsc",
-    "test": "npx eslint .",
+    "build": "npm run test && npx tsc",
+    "test": "npx eslint src/",
     "dev": "npm run test && npm run build && node dist/main.mjs"
   },
   "devDependencies": {
