@@ -1,0 +1,29 @@
+{
+  "name": "twostroke-backend",
+  "version": "0.4.20",
+  "description": "the twostroke backend api",
+  "homepage": "https://github.com/gasripper/twostroke#readme",
+  "bugs": {
+    "url": "https://github.com/gasripper/twostroke/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gasripper/twostroke.git"
+  },
+  "license": "CC-BY-SA-4.0",
+  "author": "Edwin Pers <pers.edwin@gmail.com>",
+  "type": "module",
+  "main": "dist/main.mjs",
+  "scripts": {
+    "build": "npx tsc",
+    "test": "npx eslint .",
+    "dev": "npm run test && npm run build && node dist/main.mjs"
+  },
+  "devDependencies": {
+    "@types/node": "^25.0.9",
+    "@typescript-eslint/eslint-plugin": "^8.53.0",
+    "@typescript-eslint/parser": "^8.53.0",
+    "eslint": "^9.39.2",
+    "typescript": "^5.9.3"
+  }
+}
