@@ -9,7 +9,7 @@ COPY --chown=node:node . /app/
 
 RUN set -exu \
   && cd /app \
-  && npm install \
+  && npm install --include=dev \
   && npm run build
 
 ENTRYPOINT ["/bin/sh"]
