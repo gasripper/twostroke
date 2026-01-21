@@ -177,7 +177,7 @@ exp.post('/drives/:device/analyze', async (req, res) => {
   const deviceName = devicePath.replace('/dev/', '');
 
   try {
-    log.info(`Analyzing drive ${devicePath} with speed ${speed}`);
+    log.info(`Analyzing drive ${devicePath} with speed ${speed || '(maximum)'}`);
     await analyzeDrive(
       devicePath,
       path.resolve(tmpDir, `${deviceName}-drive-analysis.log`),

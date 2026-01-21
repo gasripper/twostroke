@@ -3,6 +3,8 @@ import { exec } from 'child_process';
 import path from 'path';
 import fs from 'fs';
 
+import { log } from '../lib/logging.mjs';
+
 export async function analyzeDrive(
   devicePath: string,
   logFile: string,
@@ -21,22 +23,29 @@ export async function analyzeDrive(
   `;
 
   return new Promise<void>((resolve, reject) => {
-    exec(command, (error: unknown, stdout: unknown, stderr: unknown) => {
+    exec(command, (error: unknown, _stdout: unknown, stderr: unknown) => {
       if (error) {
-        console.error('Error executing cdparanoia');
-        console.error(stderr);
+        log.error('Error executing cdparanoia');
+        log.error(stderr);
         return reject(stderr);
       }
 
-      const lines = (stdout as string).trim().split('\n');
-      const lastLine = lines[lines.length - 2];
+      fs.readFile(logFile, 'utf8', (error, data) => {
+        if (error) {
+          log.error('Error reading log file:', error);
+          return reject(error);
+        }
 
-      if (lastLine === 'Drive tests OK with Paranoia.') {
-        resolve();
-      } else {
-        console.error('Drive test failed:', lastLine);
-        reject(new Error('Drive test failed'));
-      }
+        const lines = data.trim().split('\n');
+        const lastLine = lines[lines.length - 1];
+
+        if (lastLine === 'Drive tests OK with Paranoia.') {
+          return resolve();
+        } else {
+          log.error('Drive test failed:', lastLine);
+          return reject(new Error(`Drive test failed: ${lastLine}`));
+        }
+      });
     });
   });
 }
@@ -72,8 +81,8 @@ export async function ripTrack(
   return new Promise<void>((resolve, reject) => {
     exec(command, (error: unknown, _stdout: unknown, stderr: unknown) => {
       if (error) {
-        console.error('Error executing cdparanoia');
-        console.error(stderr);
+        log.error('Error executing cdparanoia');
+        log.error(stderr);
         return reject(stderr);
       }
       resolve();
