@@ -17,13 +17,20 @@
   "scripts": {
     "build": "npm run test && npx tsc",
     "test": "npx eslint src/",
-    "dev": "npm run test && npm run build && node dist/main.mjs"
+    "dev": "npm run build && node dist/main.mjs"
   },
   "devDependencies": {
+    "@types/express": "^5.0.6",
     "@types/node": "^25.0.9",
     "@typescript-eslint/eslint-plugin": "^8.53.1",
     "@typescript-eslint/parser": "^8.53.0",
     "eslint": "^9.39.2",
+    "prettier": "^3.8.0",
     "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "ascii-table3": "^1.0.1",
+    "express": "^5.2.1",
+    "winston": "^3.19.0"
   }
 }
