@@ -7,7 +7,7 @@ RUN set -exu \
   && apk add --no-cache \
     util-linux-misc
 
-ADD https://github.com/gasripper/discid-json/releases/latest/download/discid /usr/local/bin/discid
+ADD --chmod=555 https://github.com/gasripper/discid-json/releases/latest/download/discid /usr/local/bin/discid
 
 USER node
 WORKDIR /app
