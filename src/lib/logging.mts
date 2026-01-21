@@ -9,20 +9,8 @@ const PM8S_LOG_LEVEL: string = process.env.PM8S_LOG_LEVEL || 'debug';
 export const log: winston.Logger = winston.createLogger({
   level: PM8S_LOG_LEVEL,
   defaultMeta: {},
-  transports: [],
+  transports: [new winston.transports.Console({
+    format: winston.format.simple(),
+  })],
 });
 
-// Json in prod, pretty in dev
-if (process.env.NODE_ENV === 'production') {
-  log.add(
-    new winston.transports.Console({
-      format: winston.format.json(),
-    })
-  );
-} else {
-  log.add(
-    new winston.transports.Console({
-      format: winston.format.simple(),
-    })
-  );
-}

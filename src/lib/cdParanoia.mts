@@ -23,13 +23,7 @@ export async function analyzeDrive(
   `;
 
   return new Promise<void>((resolve, reject) => {
-    exec(command, (error: unknown, _stdout: unknown, stderr: unknown) => {
-      if (error) {
-        log.error('Error executing cdparanoia');
-        log.error(stderr);
-        return reject(stderr);
-      }
-
+    exec(command, () => {
       fs.readFile(logFile, 'utf8', (error, data) => {
         if (error) {
           log.error('Error reading log file:', error);
@@ -79,13 +73,23 @@ export async function ripTrack(
   `;
 
   return new Promise<void>((resolve, reject) => {
-    exec(command, (error: unknown, _stdout: unknown, stderr: unknown) => {
-      if (error) {
-        log.error('Error executing cdparanoia');
-        log.error(stderr);
-        return reject(stderr);
-      }
-      resolve();
+    exec(command, () => {
+      fs.readFile(logFile, 'utf8', (error, data) => {
+        if (error) {
+          log.error('Error reading log file:', error);
+          return reject(error);
+        }
+
+        const lines = data.trim().split('\n');
+        const lastLine = lines[lines.length - 1];
+
+        if (lastLine === 'Done.') {
+          return resolve();
+        } else {
+          log.error('Track rip failed:', lastLine);
+          return reject(new Error(lastLine));
+        }
+      });
     });
   });
 }

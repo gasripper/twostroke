@@ -3,6 +3,7 @@
 import fs from 'fs';
 import path from 'path';
 import crypto from 'crypto';
+import process from 'process';
 
 import Express from 'express';
 
@@ -17,9 +18,14 @@ const exp = Express();
 const port = 1888;
 
 const tmpDir: string = process.env.TMP_DIR || '/tmp/twostroke';
+const outputTopDir: string = process.env.OUTPUT_DIR || path.resolve(process.cwd(), 'output');
 
 if (!fs.existsSync(tmpDir)) {
   fs.mkdirSync(tmpDir, { recursive: true });
+}
+
+if (!fs.existsSync(outputTopDir)) {
+  fs.mkdirSync(outputTopDir, { recursive: true });
 }
 
 const excludeDevices: string[] = (process.env.EXCLUDE_DEVICES || '')
@@ -81,7 +87,7 @@ exp.get('/drives/:device/discid', async (req, res) => {
   }
 });
 
-exp.post('/drives/:device/riptrack/:track', async (req, res) => {
+exp.post('/drives/:device/rip/track/:track', async (req, res) => {
   const device = req.params.device;
   const trackParam = req.params.track;
   const speedParam = req.query.speed;
@@ -110,7 +116,7 @@ exp.post('/drives/:device/riptrack/:track', async (req, res) => {
 
   const fileName = (fileNameParam ? fileNameParam : trackNum).toString();
 
-  const outputDir = path.resolve(tmpDir, outputDirParam.toString());
+  const outputDir = path.resolve(outputTopDir, outputDirParam.toString());
   const devicePath = device.startsWith('/dev/') ? device : `/dev/${device}`;
   try {
     log.info(
@@ -180,7 +186,7 @@ exp.post('/drives/:device/analyze', async (req, res) => {
     log.info(`Analyzing drive ${devicePath} with speed ${speed || '(maximum)'}`);
     await analyzeDrive(
       devicePath,
-      path.resolve(tmpDir, `${deviceName}-drive-analysis.log`),
+      path.resolve(outputTopDir, `${deviceName}-drive-analysis.log`),
       speed
     );
     res.status(200).json({
@@ -197,7 +203,7 @@ exp.post('/drives/:device/analyze', async (req, res) => {
   }
 });
 
-exp.post('/drives/:device/ripcd', async (req, res) => {
+exp.post('/drives/:device/rip/cd', async (req, res) => {
   const device = req.params.device;
   const speedParam = req.query.speed;
   const outputDirParam =
@@ -209,7 +215,7 @@ exp.post('/drives/:device/ripcd', async (req, res) => {
     speed = parseInt(speedParam as string, 10);
   }
 
-  const outputDir = path.resolve(tmpDir, outputDirParam.toString());
+  const outputDir = path.resolve(outputTopDir, outputDirParam.toString());
 
   try {
     log.info(
